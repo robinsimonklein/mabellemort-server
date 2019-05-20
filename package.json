@@ -4,8 +4,8 @@
   "description": "Back-end for Ma Belle Mort project",
   "main": "index.js",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/robinsimonklein/mabellemort-server"
+    "type": "git",
+    "url": "https://github.com/robinsimonklein/mabellemort-server"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,6 +13,7 @@
   "author": "Robin Simonklein",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/storage": "^2.5.0",
     "apiai": "^4.0.3",
     "cors": "^2.8.5",
     "dialogflow": "^0.9.0",
