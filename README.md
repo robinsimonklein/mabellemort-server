@@ -16,7 +16,7 @@ npm install
 ## Lancer le serveur
 
 ```
-node app
+node appNew
 ```
 
 Le serveur sera disponible sur le port `:3000`

@@ -1,96 +1,66 @@
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+
+const dotenv = require('dotenv').config();
+const uuidv1 = require('uuid/v1');
+
+// Create express app
 const app = express();
 const port = 3000;
 
-// Imports the Google Cloud client library
-const {Storage} = require('@google-cloud/storage');
+const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
+const AI_SESSION_ID = uuidv1();
 
-const dialogflow = require('dialogflow');
-const uuid = require('uuid');
-const dotenv = require('dotenv').config();
+console.log('ACCESS_TOKEN', ACCESS_TOKEN);
+console.log('AI_SESSION_ID', AI_SESSION_ID);
 
-const projectId = 'mabellemort-6e5b9';
+const dialogflow = require('apiai');
+const ai = dialogflow(ACCESS_TOKEN);
 
-console.log('projectId :', projectId);
-
-/* Express config */
-
+// Add cors to app
 app.use(cors());
 
-app.get('/', (req, res) => res.send('Hello World!'));
+// Configure body Parser
+app.use(bodyParser.urlencoded({extended: true}));
+server.use(bodyParser.json());
+
+// Configure routes
+app.get('/', (req, res) => {
+    res.setHeader('Content-Type', 'text/html');
+    res.send('Hello World!')
+});
 
 const server = app.listen(port, () => console.log(`Server listening on port ${port}!`));
 
 const io = require('./socket').init(server);
 
+
 io.on('connection', socket => {
     console.log('connection');
-
+    socket.emit('request', () => {console.log('connect')}); // emit an event to the socket
+    io.emit('broadcast', /* … */); // emit an event to all connected sockets
     socket.on('dialogflow request', (text) => {
-        dialogflowRequest(projectId);
-    });
+        console.log('Message: ', text);
+
+        // Get a reply from API.ai
+
+        let aiReq = ai.textRequest(text, {
+            sessionId: AI_SESSION_ID
+        });
+
+        aiReq.on('response', (response) => {
+            let aiResponse = response.result.fulfillment.speech;
+            console.log('AI Response: ' + aiResponse);
+            socket.emit('dialogflow response', aiResponse);
+        });
+
+        aiReq.on('error', (error) => {
+            console.log(error);
+        });
+
+        aiReq.end();
+    }); // listen to the event
+
+
 });
-
-
-
-// Creates a client
-const storage = new Storage();
-
-/**
- * TODO(developer): Uncomment these variables before running the sample.
- */
-const bucketName = 'bucket-name';
-
-async function createBucket() {
-    // Creates the new bucket
-    await storage.createBucket(bucketName);
-    console.log(`Bucket ${bucketName} created.`);
-}
-
-createBucket();
-
-/**
- * Send a query to the dialogflow agent, and return the query result.
- * @param {string} projectId The project to be used
- */
-
-async function dialogflowRequest(projectId) {
-    // A unique identifier for the given session
-    const sessionId = uuid.v4();
-
-    // Create a new session
-    const sessionClient = new dialogflow.SessionsClient();
-    const sessionPath = sessionClient.sessionPath(projectId, sessionId);
-
-    /*
-    // The text query request.
-    const request = {
-        session: sessionPath,
-        queryInput: {
-            text: {
-                // The query to send to the dialogflow agent
-                text: 'bonjour',
-                // The language used by the client (en-US)
-                languageCode: 'fr-FR',
-            },
-        },
-    };
-
-    // Send request and log result
-    const responses = await sessionClient.detectIntent(request);
-    console.log('Detected intent');
-    const result = responses[0].queryResult;
-    console.log(`  Query: ${result.queryText}`);
-    console.log(`  Response: ${result.fulfillmentText}`);
-    if (result.intent) {
-        console.log(`  Intent: ${result.intent.displayName}`);
-    } else {
-        console.log(`  No intent matched.`);
-    }
-
-     */
-}
-
-dialogflowRequest(projectId);
-
