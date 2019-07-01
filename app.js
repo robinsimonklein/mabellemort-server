@@ -10,12 +10,8 @@ const uuidv1 = require('uuid/v1');
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 const AI_SESSION_ID = uuidv1();
 
-console.log('ACCESS_TOKEN', ACCESS_TOKEN);
-console.log('AI_SESSION_ID', AI_SESSION_ID);
-
 const dialogflow = require('apiai');
 const ai = dialogflow(ACCESS_TOKEN);
-
 
 
 app.use(cors());
