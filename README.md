@@ -1,4 +1,4 @@
-# mabellemort-server
+# 💀 Ma Belle Mort - (server) 💀
 
 Le projet [Ma Belle Mort](https://github.com/robinsimonklein/mabellemort) nécéssite 
 une connexion à ce serveur Node.js afin d'échanger avec DialogFlow pour les réponses 
@@ -16,7 +16,7 @@ npm install
 ## Lancer le serveur
 
 ```
-node appNew
+node app
 ```
 
 Le serveur sera disponible sur le port `:3000`
