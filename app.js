@@ -7,7 +7,7 @@ const dotenv = require('dotenv').config();
 
 const uuidv1 = require('uuid/v1');
 
-const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
+const ACCESS_TOKEN = 'de5f56a7d3ea4b63b3033f5e452209d5';
 const AI_SESSION_ID = uuidv1();
 
 const dialogflow = require('apiai');
